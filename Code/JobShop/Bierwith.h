@@ -1,0 +1,56 @@
+#pragma once
+
+
+#ifndef BIERWITH
+#define BIERWITH
+
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <sstream>
+
+#include <cstdlib>
+#include <iostream>
+#include <ctime>
+
+
+using namespace std;
+
+
+const int nb_max_machines = 20;
+const int nb_max_pieces = 20;
+const int t_max = 16;
+
+typedef struct probleme {
+	int nb_machine;
+    int nb_piece;
+	int mach[nb_max_pieces + 1][nb_max_machines + 1];
+	int mach_inv[nb_max_pieces + 1][nb_max_machines + 1];
+	int duree[nb_max_pieces + 1][nb_max_machines + 1];
+	int duree_inv[nb_max_pieces + 1][nb_max_machines + 1];
+	int T[nb_max_pieces+1][nb_max_machines+1];
+}t_probleme;
+
+typedef struct solu {
+	int longueur;
+	int makespan;
+	int Bierwirth[nb_max_pieces*nb_max_machines + 1];
+	int ES[nb_max_pieces*nb_max_machines + 1];
+	int pere[nb_max_pieces*nb_max_machines + 1];
+}t_solution;
+
+void lire_fichier(string nom_fichier, t_probleme & probleme);
+
+void generer_vect_alea(t_probleme &probleme, t_solution &solution);
+void inverser_duree(t_probleme & probleme);
+void inverser_machine(t_probleme & probleme);
+
+void evaluer(t_probleme & probleme, t_solution & solution);
+void Ajout_PereInit_Makespen(t_solution &solution, t_probleme &sprobleme);
+
+void afficher(t_probleme probleme);
+void afficher_Pinv(t_probleme probleme);
+void afficher_machine_inv(t_probleme probleme);
+void afficher_solution(t_solution solution);
+
+#endif // !BIERWITH
