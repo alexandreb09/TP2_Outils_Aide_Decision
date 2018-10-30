@@ -5,7 +5,7 @@ int main(int, char **) {
 
 	srand(123456897);
 	t_probleme probleme;
-	lire_fichier("..//Sources//test_cours.txt", probleme);
+	lire_fichier("..//Sources//ft06.txt", probleme);
 	afficher(probleme);
 
 	t_solution sol;
@@ -15,7 +15,7 @@ int main(int, char **) {
 	afficher_Pinv(probleme);
 
 	/* 
-	// Exemple cours 
+	// Exemple cours 3 x 3
 	sol.Bierwirth[1] = 1;
 	sol.Bierwirth[2] = 2;
 	sol.Bierwirth[3] = 2;
@@ -33,6 +33,7 @@ int main(int, char **) {
 	evaluer(probleme, sol);
 
 	string stop;
+	cout << endl << "appuyer pour sortir (^_-)";
 	cin >> stop;
 
 	return 0;

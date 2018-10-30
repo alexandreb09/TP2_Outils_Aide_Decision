@@ -88,7 +88,7 @@ void evaluer(t_probleme & probleme, t_solution & solution) {
 		}
 	}
 		
-
+	/*		RESOLUTION		*/	
 	for (int i = 1; i <= probleme.nb_machine*probleme.nb_piece; i++) {
 		int k = solution.Bierwirth[i];
 		NP[k]++;
@@ -195,5 +195,11 @@ void afficher_solution(t_solution solution) {
 	for (int i = 1; i <= solution.longueur +1; i++) {
 		cout << solution.pere[i] << " ";
 	}
-	cout << endl;
+	cout << endl << "makespan : " << solution.makespan << endl << "Chemin critique : ";
+	int ind = solution.pere[solution.longueur+1];
+	while (ind != 0) {
+		cout << ind << " ";
+		ind = solution.pere[ind];
+	}
+	cout << "0" << endl;
 }
