@@ -52,5 +52,6 @@ void afficher(t_probleme probleme);
 void afficher_Pinv(t_probleme probleme);
 void afficher_machine_inv(t_probleme probleme);
 void afficher_solution(t_solution solution);
+void rechercheLocal(t_probleme & probleme, t_solution & solution, int nbIteration);
 
 #endif // !BIERWITH
