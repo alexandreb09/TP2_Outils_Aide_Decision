@@ -30,7 +30,8 @@ int main(int, char **) {
 	inverser_machine(probleme);
 	afficher_machine_inv(probleme);
 
-	evaluer(probleme, sol);
+	//evaluer(probleme, sol);
+	rechercheLocal(probleme, sol, 5);
 
 	string stop;
 	cout << endl << "appuyer pour sortir (^_-)";
