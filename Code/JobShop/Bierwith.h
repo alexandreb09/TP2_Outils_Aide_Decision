@@ -12,6 +12,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <ctime>
+#include <vector>
 
 
 using namespace std;
@@ -47,11 +48,12 @@ void inverser_machine(t_probleme & probleme);
 
 void evaluer(t_probleme & probleme, t_solution & solution);
 void Ajout_PereInit_Makespen(t_solution &solution, t_probleme &sprobleme);
+void rechercheLocal(t_probleme & probleme, t_solution & solution, int nbIteration);
 
 void afficher(t_probleme probleme);
 void afficher_Pinv(t_probleme probleme);
 void afficher_machine_inv(t_probleme probleme);
 void afficher_solution(t_solution solution);
-void rechercheLocal(t_probleme & probleme, t_solution & solution, int nbIteration);
+void afficherIntro();
 
 #endif // !BIERWITH

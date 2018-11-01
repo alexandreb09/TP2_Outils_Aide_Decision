@@ -1,5 +1,5 @@
 ﻿  Bierwith.cpp
-d:\1.cours\isima\zz2\outils_aide_décision\tp2\code\jobshop\bierwith.cpp(135): warning C4101: 'machine' : variable locale non référencée
+d:\1.cours\isima\zz2\outils_aide_décision\tp2\code\jobshop\bierwith.cpp(132): warning C4101: 'machine' : variable locale non référencée
   main.cpp
   Génération de code en cours...
   JobShop.vcxproj -> D:\1.Cours\ISIMA\ZZ2\Outils_Aide_Décision\TP2\Code\x64\Debug\JobShop.exe

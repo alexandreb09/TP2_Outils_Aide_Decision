@@ -1,5 +1,6 @@
 #include "Bierwith.h"
 
+using namespace std;
 
 void lire_fichier(string nom_fichier, t_probleme & probleme){
 	ifstream mon_fichier(nom_fichier);
@@ -34,16 +35,13 @@ void generer_vect_alea(t_probleme & probleme, t_solution & solution) {
 	int max = nb_max_num_V, i;
 	int tab1_pt[t_max + 1];
 	int tab2_pt[t_max + 1];
-
-	srand(123456789);					// Fixe aléatoire
-
+	
 	for (int i = 1; i <= probleme.nb_machine; i++) {		// Initialisation tableau tab1 et tab2
 		tab1_pt[i] = probleme.nb_piece;
 		tab2_pt[i] = i;
 	}
 
 	for (int j = 1; j <= nb_elem_V; j++) {			// Remplissage vecteur Bierwith
-		// i = rand() % max + 1;
 		i = rand() % (max) + 1;
 		tab1_pt[i] --;
 		solution.Bierwirth[j] = tab2_pt[i];
@@ -54,11 +52,13 @@ void generer_vect_alea(t_probleme & probleme, t_solution & solution) {
 		}
 	}
 
+	/*
 	cout << endl << "Vecteur bierwith :" << endl;		// affichage tableau Bierwith
 	for (int k = 1; k <= nb_elem_V; k++) {
 		cout << solution.Bierwirth[k] << " ";
 	}
 	cout << endl;
+	*/
 }
 
 
@@ -114,11 +114,8 @@ void evaluer(t_probleme & probleme, t_solution & solution) {
 		}
 		m[mach] = k;
 	}
-
 	Ajout_PereInit_Makespen(solution, probleme);
-
-
-	afficher_solution(solution);
+	// afficher_solution(solution);
 }
 
 void inverser_duree(t_probleme & probleme){
@@ -157,7 +154,7 @@ void Ajout_PereInit_Makespen(t_solution &solution, t_probleme &probleme) {
 /*============================================*/
 
 void afficher(t_probleme probleme) {
-	cout << endl << "Probleme : " << endl << "Nb pièces : " << probleme.nb_piece << endl << "Nb machines : " << probleme.nb_machine << endl;
+	cout << endl << "Probleme : " << endl << "Nb pieces : " << probleme.nb_piece << endl << "Nb machines : " << probleme.nb_machine << endl;
 	for (int i = 1; i <= probleme.nb_piece; i++) {
 		for (int j = 1; j <= probleme.nb_machine; j++) {
 			cout << probleme.mach[i][j] << " " << probleme.duree[i][j] << " ";
@@ -204,93 +201,109 @@ void afficher_solution(t_solution solution) {
 	cout << "0" << endl;
 }
 
-void rechercheLocal(t_probleme & probleme, t_solution & solution, int nbIteration)
-{
-	int compteurIteration = 1;
-	t_solution solution2 = solution;
-	evaluer(probleme, solution);
-	int i = compteurIteration;
-	int j = solution.pere[i];
-	int Pi ; //position danc vecteur de bierwith
-	int Pj ;
-	int comp1 = 0;
-	int k = 1;
-	int comp2 = 0;
-	int l = 1;
-	
+void afficherIntro() {
+	cout << "   _______  _______  _______        _______  _    _  _______  _______ " << endl <<
+		"  |__   __||   _   ||   _   |      |   ____|| |  | ||   _   ||   _   |" << endl <<
+		"     | |   |  | |  ||  |_|  |      |  |___ || |  | ||  | |  ||  |_|  |" << endl <<
+		"  _  | |   |  | |  ||   _   |      |____   || |__| ||  | |  ||   ____|" << endl <<
+		" | |_| |   |  |_|  ||  |_|  |       ____|  ||  __  ||  |_|  ||  |     " << endl <<
+		" |_____|   |_______||_______|      |_______||_|  |_||_______||__|     " << endl;
+}
 
-	while (j != 0 && compteurIteration < nbIteration)
-	{
+void rechercheLocal(t_probleme & probleme, t_solution & solution, int nbIteration_max){
+	evaluer(probleme, solution);
+
+	int i = solution.pere[solution.longueur+1];
+	int j = solution.pere[i];
+	int compteurIteration = 1;
+	int Pi, Pj;										//position danc vecteur de bierwith
+
+	t_solution solution2 = solution;
+
+	int comp1 = 0;
+	int comp2 = 0;
+	int k = 1;
+	int l = 1;
+
+	std::vector<int> APP;
+	APP.push_back(-1);
+	for (int i = 0; i < solution.longueur ; i++) {
+		APP.push_back((int) i/probleme.nb_machine+1);
+	}
+
+
+	while (j != 0 && compteurIteration < nbIteration_max){
+		/*
 		cout << "Operation numero :" << i<< endl;
 		cout << "Le pere de i est " << solution.pere[i] << endl;
+		*/
 
-		if (abs(i - j) > probleme.nb_machine - 1)
-		{
+		if (APP[i] != APP[j] ){
+			/*
 			int job1;
 			int ordreOp1 = i % probleme.nb_machine + 1;
 			int job2;
 			int ordreOp2 = i % probleme.nb_machine + 1;
 
-			if (i <= probleme.nb_machine)
-			{
+			
+			if (i <= probleme.nb_machine){
 				job1 = 1;
 				ordreOp1 = i;
 			}
-			else if ((i % probleme.nb_machine != 0))
-			{
+			else if ((i % probleme.nb_machine != 0)){
 				job1 = (i / probleme.nb_machine ) + 1;
 				ordreOp1 = i % probleme.nb_machine;
 			}
-			else
-			{
+			else {
 				job1 = (i / probleme.nb_machine);
 			}
-			if (j <= probleme.nb_machine)
-			{
+			if (j <= probleme.nb_machine){
 				job2 = 1;
 				ordreOp2 = j;
 			}
-			else if ((j % probleme.nb_machine != 0))
-			{
+			else if ((j % probleme.nb_machine != 0)){
 				job2 = (j / probleme.nb_machine) + 1;
 				ordreOp2 = j % probleme.nb_machine ;
 			}
-			else
-			{
+			else {
 				job2= (j / probleme.nb_machine);
 			}
+			*/
+			int job_i = (i-1) / probleme.nb_machine + 1;
+			int ordre_Op_i = i - (job_i-1) * probleme.nb_machine;
+
+			int job_j = (j-1) / probleme.nb_machine + 1;
+			int ordre_Op_j = j - (job_j-1) * probleme.nb_machine;
+
+			/*
 			cout <<"job1 "<< job1 << endl;
 			cout <<"job2 " << job2 << endl;
 			cout << "op1 " << ordreOp1 << endl;
 			cout << "op2 " << ordreOp2 << endl;
-			int stop1 = 0;
-			while (k <= probleme.nb_machine*probleme.nb_piece && stop1 == 0)
-			{
-				if ((solution.Bierwirth[k] == job1))
-				{
+			*/
+			int stop = 0;
+			while (k <= probleme.nb_machine*probleme.nb_piece && stop == 0){
+				if ((solution.Bierwirth[k] == job_i)){
 					comp1++;
-					if (comp1 == ordreOp1)
-					{
+					if (comp1 == ordre_Op_i){
 						Pi = k;
-						stop1 = 1;
+						stop = 1;
 					}
 				}
 				k++;
 			}
-			int stop2 = 0;
-			while ( l <= probleme.nb_machine*probleme.nb_piece && stop2 ==0 )			
-			{ 
-				if ((solution.Bierwirth[l] == job2))
-				{
+			stop = 0;
+			while ( l <= probleme.nb_machine*probleme.nb_piece && stop ==0 ){ 
+				if (solution.Bierwirth[l] == job_j){
 					comp2++;
-					if (comp2 == ordreOp2)
-					{
+					if (comp2 == ordre_Op_j){
 						Pj = l;
-						stop2 = 1;
+						stop = 1;
 					}
 				}
 				l++;
 			}
+			/*
 			cout << "test" << endl;
 			cout << "Indice1 est : "<<Pi << endl;
 			cout << "Indice2 est : "<<Pj << endl;
@@ -303,48 +316,57 @@ void rechercheLocal(t_probleme & probleme, t_solution & solution, int nbIteratio
 				cout << solution2.Bierwirth[t] << " ";
 			}
 			cout << endl;
-			solution2.Bierwirth[Pi] = job2;
-			solution2.Bierwirth[Pj] = job1;
+			*/
+			solution2 = solution;
+			int tmp = solution2.Bierwirth[Pi];
+			solution2.Bierwirth[Pi] = solution2.Bierwirth[Pj];
+			solution2.Bierwirth[Pj] = tmp;
+			/*
 			cout << solution2.Bierwirth[Pi] << endl;
 			cout << solution2.Bierwirth[Pj] << endl;
+			*/
 
+			/*
 			cout << endl << "Vecteur bierwith apres permutation :" << endl;		// affichage tableau Bierwith
 			for (int t = 1;t <= probleme.nb_machine * probleme.nb_piece; t++) {
 				cout << solution2.Bierwirth[t] << " ";
 			}
 			cout << endl;
-			int bestMakespan = solution.makespan;
+			
 			cout <<"evaluer2"<< endl;
+			*/
 			evaluer(probleme, solution2);
+			/*
 			for (int t = 1; t <= probleme.nb_machine * probleme.nb_piece; t++) {
 				cout << solution2.Bierwirth[t] << " ";
 			}
+			
 			cout << endl;
+			
 			cout << "Nouveau Makespan est : " << solution2.makespan << endl;
 			cout << endl;
-			if (solution2.makespan < bestMakespan)
-			{
+			*/
+			if (solution2.makespan < solution.makespan)	{
 				solution = solution2;
-				i = compteurIteration;
+				solution.pere[solution.longueur + 1];
 				j = solution.pere[i];
-				cout << "NewBestMakespan est : " << solution.makespan << endl;
-
+				//cout << "NewBestMakespan est : " << solution.makespan << endl;
 			}
-			else
-			{
+			else{
 				i = j;
-				j = solution.pere[i]; cout << "valeur de j  1 est : " << j << endl;
+				j = solution.pere[i]; 
+				// cout << "valeur de j  1 est : " << j << endl;
 			}
 		}
-		else
-		{
+		else {
 			i = j;
 			j = solution.pere[i];
-			cout << "valeur de j  2 est : " << j << endl;
+			// cout << "valeur de j  2 est : " << j << endl;
 		}
-		
+		/*
 		cout << "compteurIteration++ : " << compteurIteration++ << endl; //tests
 		cout << "valeur de j est : " << j << endl;
+		*/
 	}
 	compteurIteration++;
 }

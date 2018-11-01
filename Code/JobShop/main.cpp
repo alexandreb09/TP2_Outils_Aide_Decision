@@ -1,9 +1,13 @@
 #include "Bierwith.h"
 
 
-int main(int, char **) {
 
-	srand(123456897);
+int main(int, char **) {	 
+
+	afficherIntro();
+
+	// srand(123456897);
+	int n_ite = 100;
 	t_probleme probleme;
 	lire_fichier("..//Sources//ft06.txt", probleme);
 	afficher(probleme);
@@ -12,7 +16,9 @@ int main(int, char **) {
 	generer_vect_alea(probleme, sol);
 
 	inverser_duree(probleme);
-	afficher_Pinv(probleme);
+	// afficher_Pinv(probleme);
+	inverser_machine(probleme);
+	// afficher_machine_inv(probleme);
 
 	/* 
 	// Exemple cours 3 x 3
@@ -27,14 +33,12 @@ int main(int, char **) {
 	sol.Bierwirth[9] = 3;
 	*/
 
-	inverser_machine(probleme);
-	afficher_machine_inv(probleme);
-
 	//evaluer(probleme, sol);
-	rechercheLocal(probleme, sol, 5);
+
+	rechercheLocal(probleme, sol, n_ite);
 
 	string stop;
-	cout << endl << "appuyer pour sortir (^_-)";
+	cout << endl << endl << endl << "Apres " << n_ite << " iterations, on trouve un makespan : " << sol.makespan << endl << "Appuyer pour sortir (^_-)";
 	cin >> stop;
 
 	return 0;
