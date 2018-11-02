@@ -2,13 +2,15 @@
 
 
 
-int main(int, char **) {	 
+main(int, char **) {	 
 
 	afficherIntro();
 
 	// srand(123456897);
-	int n_ite = 100;
+	int n_ite = 10;
 	t_probleme probleme;
+
+	t_population population;
 	lire_fichier("..//Sources//ft06.txt", probleme);
 	afficher(probleme);
 
@@ -35,10 +37,11 @@ int main(int, char **) {
 
 	//evaluer(probleme, sol);
 
-	rechercheLocal(probleme, sol, n_ite);
+	//rechercheLocal(probleme, sol, n_ite);
 
+	genererPopulationAlea( population,  probleme,  sol, n_ite);
 	string stop;
-	cout << endl << endl << endl << "Apres " << n_ite << " iterations, on trouve un makespan : " << sol.makespan << endl << "Appuyer pour sortir (^_-)";
+	//cout << endl << endl << endl << "Apres " << n_ite << " iterations, on trouve un makespan : " << sol.makespan << endl << "Appuyer pour sortir (^_-)";
 	cin >> stop;
 
 	return 0;
