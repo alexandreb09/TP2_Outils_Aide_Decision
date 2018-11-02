@@ -21,8 +21,9 @@ using namespace std;
 const int nb_max_machines = 20;
 const int nb_max_pieces = 20;
 const int t_max = 16;
+const int max = 10;
 
-typedef struct probleme {
+typedef struct prob {
 	int nb_machine;
     int nb_piece;
 	int mach[nb_max_pieces + 1][nb_max_machines + 1];
@@ -38,7 +39,15 @@ typedef struct solu {
 	int Bierwirth[nb_max_pieces*nb_max_machines + 1];
 	int ES[nb_max_pieces*nb_max_machines + 1];
 	int pere[nb_max_pieces*nb_max_machines + 1];
+	int signature;
 }t_solution;
+
+typedef struct population
+{ 
+	int nbIndividu = max;
+	t_solution liste[max];
+
+}t_population;
 
 void lire_fichier(string nom_fichier, t_probleme & probleme);
 
@@ -55,5 +64,6 @@ void afficher_Pinv(t_probleme probleme);
 void afficher_machine_inv(t_probleme probleme);
 void afficher_solution(t_solution solution);
 void afficherIntro();
-
+void testerDouble(t_solution solution1, t_solution solution2, bool doublant);
+void genererPopulationAlea(t_population population, t_probleme probleme, t_solution solution, int nb);
 #endif // !BIERWITH
