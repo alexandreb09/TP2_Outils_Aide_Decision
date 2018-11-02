@@ -212,11 +212,12 @@ void afficherIntro() {
 
 void rechercheLocal(t_probleme & probleme, t_solution & solution, int nbIteration_max){
 	evaluer(probleme, solution);
+	cout << "Makespan avant optimisation :" << solution.makespan << endl;
 
 	int i = solution.pere[solution.longueur+1];
 	int j = solution.pere[i];
 	int compteurIteration = 1;
-	int Pi, Pj;										//position danc vecteur de bierwith
+	int Pi, Pj;										//position dans vecteur de bierwith
 
 	t_solution solution2 = solution;
 
@@ -369,4 +370,36 @@ void rechercheLocal(t_probleme & probleme, t_solution & solution, int nbIteratio
 		*/
 	}
 	compteurIteration++;
+}
+
+void testerDouble(t_solution solution1, t_solution solution2, bool doublant)
+{
+	if (solution1.makespan != solution2.makespan)
+	{
+		doublant = false;
+	}
+	else
+	{
+		doublant = true;
+	}
+
+}
+
+void genererPopulationAlea(t_population population, t_probleme probleme, t_solution solution, int nb )
+{
+	int i = 1;
+	while (i <= population.nbIndividu)
+	{
+		t_solution nouvelleSolution;
+		generer_vect_alea(probleme, solution);
+		//evaluer(probleme, solution);
+		rechercheLocal(probleme, solution, nb);
+		nouvelleSolution = solution;
+		population.liste[i] = nouvelleSolution;
+		cout << "Best makespan de la "<<i<<"eme solution est "<< nouvelleSolution.makespan << endl;
+		i++;
+		cout << endl;
+	}
+	
+
 }
