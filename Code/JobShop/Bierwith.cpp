@@ -372,7 +372,7 @@ void rechercheLocal(t_probleme & probleme, t_solution & solution, int nbIteratio
 	compteurIteration++;
 }
 
-void testerDouble(t_solution solution1, t_solution solution2, bool doublant)
+oid testerDouble(t_solution &solution1, t_solution &solution2, bool doublant)
 {
 	if (solution1.makespan != solution2.makespan)
 	{
@@ -385,11 +385,10 @@ void testerDouble(t_solution solution1, t_solution solution2, bool doublant)
 
 }
 
-
-void genererPopulationAlea(t_population population, t_probleme probleme, t_solution solution, int nb)
+void genererPopulationAlea(t_population &population, t_probleme &probleme, t_solution &solution, int nb)
 {
-	int i = 1;
-	while (i <= population.nbIndividu)
+	int i =0;
+	while (i < population.nbIndividu)
 	{
 		t_solution nouvelleSolution;
 		generer_vect_alea(probleme, solution);
@@ -406,13 +405,91 @@ void genererPopulationAlea(t_population population, t_probleme probleme, t_solut
 		if (doublant == false)
 		{
 			population.liste[i] = nouvelleSolution;
+		
+			if (i != 0 && population.liste[i].makespan < population.liste[i - 1].makespan)
+			{
+				t_solution tmp = population.liste[i - 1];
+				population.liste[i - 1] = population.liste[i];
+				population.liste[i] = tmp;
 
+			}
 			i++;
+			cout << "Best makespan de la " << i  << "eme solution est " << nouvelleSolution.makespan << endl;
+
+			cout << endl;
 		}
+		
 
 
-		cout << "Best makespan de la " << i << "eme solution est " << nouvelleSolution.makespan << endl;
-
-		cout << endl;
+		
+		
 	}
+	for (int k = 0; k < population.nbIndividu; k++)
+	{
+		cout << (population.liste[k]).makespan << "  " ;
+	}
+}
+
+
+
+void selectionBestIndividus(t_population &population, int nb, t_population& populationNouvelle)
+{
+	for (int i = 0; i < nb; i++)
+	{
+		populationNouvelle.liste[i] = population.liste[i];
+	}
+
+}
+
+void croisement(t_probleme& probleme, t_solution &parent1, t_solution &parent2, t_solution& enfant)
+{
+	
+	int nbApparitionJobs[nb_max_pieces] = { 0 };
+	for (int i = 1; i <=probleme.nb_machine; i++)    // decoupage de l'ADN en 3 genes :P
+	{
+		
+		enfant.Bierwirth[i]=parent1.Bierwirth[i];
+		nbApparitionJobs[enfant.Bierwirth[i]] ++;
+		
+	}
+	int indice = probleme.nb_machine+1;
+	for (int i = probleme.nb_machine + 1; i <= probleme.nb_machine * 2; i++)
+	{
+		if ((nbApparitionJobs[enfant.Bierwirth[i]] < probleme.nb_machine ))
+		{
+			enfant.Bierwirth[i] = parent2.Bierwirth[i];
+			nbApparitionJobs[enfant.Bierwirth[i]] ++;
+			indice++;
+		}
+	}
+	for (int i = indice; i <= probleme.nb_machine * 3; i++)
+	{
+		int k = 1;
+		while (nbApparitionJobs[k] == probleme.nb_machine)
+		{
+			k++;
+		}
+		enfant.Bierwirth[i] = k;
+		nbApparitionJobs[k]++;
+
+	}
+
+	cout << endl << "Vecteur bierwith :" << endl;		// affichage tableau Bierwith
+	for (int k = 1; k <= probleme.nb_machine*probleme.nb_piece; k++) {
+		cout << parent1.Bierwirth[k] << " ";
+	}
+	cout << endl;
+
+	cout << endl << "Vecteur bierwith :" << endl;		// affichage tableau Bierwith
+	for (int k = 1; k <= probleme.nb_machine*probleme.nb_piece; k++) {
+		cout << parent2.Bierwirth[k] << " " ;
+	}
+	cout << endl;
+
+	cout << endl << "Vecteur bierwith :" << endl;		// affichage tableau Bierwith
+	for (int k = 1; k <= probleme.nb_machine*probleme.nb_piece; k++) {
+		cout << enfant.Bierwirth[k] << " ";
+	}
+	cout << endl;
+
 }
