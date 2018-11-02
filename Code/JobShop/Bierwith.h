@@ -64,6 +64,9 @@ void afficher_Pinv(t_probleme probleme);
 void afficher_machine_inv(t_probleme probleme);
 void afficher_solution(t_solution solution);
 void afficherIntro();
-void testerDouble(t_solution solution1, t_solution solution2, bool doublant);
-void genererPopulationAlea(t_population population, t_probleme probleme, t_solution solution, int nb);
+
+void testerDouble(t_solution &solution1, t_solution &solution2, bool doublant);
+void genererPopulationAlea(t_population &population, t_probleme &probleme, t_solution &solution, int nb);
+void selectionBestIndividus(t_population &population, int nb, t_population &populationNouvelle);
+void croisement(t_probleme &probleme, t_solution &parent1, t_solution &parent2, t_solution &enfant);
 #endif // !BIERWITH
