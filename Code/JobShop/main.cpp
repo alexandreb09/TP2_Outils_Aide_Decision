@@ -40,6 +40,7 @@ main(int, char **) {
 	//rechercheLocal(probleme, sol, n_ite);
 
 	genererPopulationAlea( population,  probleme,  sol, n_ite);
+	//croisement(probleme, population.liste[1], population.liste[2], enfant);
 	string stop;
 	//cout << endl << endl << endl << "Apres " << n_ite << " iterations, on trouve un makespan : " << sol.makespan << endl << "Appuyer pour sortir (^_-)";
 	cin >> stop;
