@@ -385,7 +385,8 @@ void testerDouble(t_solution solution1, t_solution solution2, bool doublant)
 
 }
 
-void genererPopulationAlea(t_population population, t_probleme probleme, t_solution solution, int nb )
+
+void genererPopulationAlea(t_population population, t_probleme probleme, t_solution solution, int nb)
 {
 	int i = 1;
 	while (i <= population.nbIndividu)
@@ -395,11 +396,23 @@ void genererPopulationAlea(t_population population, t_probleme probleme, t_solut
 		//evaluer(probleme, solution);
 		rechercheLocal(probleme, solution, nb);
 		nouvelleSolution = solution;
-		population.liste[i] = nouvelleSolution;
-		cout << "Best makespan de la "<<i<<"eme solution est "<< nouvelleSolution.makespan << endl;
-		i++;
+		bool doublant = false;
+
+		for (int k = 1; k < i; k++)
+		{
+			testerDouble(population.liste[k], solution, doublant);
+
+		}
+		if (doublant == false)
+		{
+			population.liste[i] = nouvelleSolution;
+
+			i++;
+		}
+
+
+		cout << "Best makespan de la " << i << "eme solution est " << nouvelleSolution.makespan << endl;
+
 		cout << endl;
 	}
-	
-
 }
