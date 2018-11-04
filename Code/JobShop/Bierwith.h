@@ -69,4 +69,6 @@ void testerDouble(t_solution &solution1, t_solution &solution2, bool doublant);
 void genererPopulationAlea(t_population &population, t_probleme &probleme, t_solution &solution, int nb);
 void selectionBestIndividus(t_population &population, int nb, t_population &populationNouvelle);
 void croisement(t_probleme &probleme, t_solution &parent1, t_solution &parent2, t_solution &enfant);
+void algoGenetique(t_probleme & probleme, t_solution & solution, t_population & generationInitiale, t_population & elite, int nbGeneration, int nbIterRechLocale, int nbIndividuSelection);
+#endif // !BIERWITH
 #endif // !BIERWITH
