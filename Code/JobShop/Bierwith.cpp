@@ -372,7 +372,7 @@ void rechercheLocal(t_probleme & probleme, t_solution & solution, int nbIteratio
 	compteurIteration++;
 }
 
-oid testerDouble(t_solution &solution1, t_solution &solution2, bool doublant)
+void testerDouble(t_solution &solution1, t_solution &solution2, bool doublant)
 {
 	if (solution1.makespan != solution2.makespan)
 	{
@@ -443,36 +443,70 @@ void selectionBestIndividus(t_population &population, int nb, t_population& popu
 
 void croisement(t_probleme& probleme, t_solution &parent1, t_solution &parent2, t_solution& enfant)
 {
+	cout << endl << "Vecteur bierwith :" << endl;		// affichage tableau Bierwith
+	for (int k = 1; k <= probleme.nb_machine*probleme.nb_piece; k++) {
+		cout << parent1.Bierwirth[k] << " ";
+	}
 	
-	int nbApparitionJobs[nb_max_pieces] = { 0 };
-	for (int i = 1; i <=probleme.nb_machine; i++)    // decoupage de l'ADN en 3 genes :P
+	cout << endl;
+	unsigned int nbApparitionJobs[nb_max_pieces] = {0};
+	for (int i = 1; i <= (probleme.nb_machine*probleme.nb_piece)/3; i++)    // decoupage de l'ADN en 3 genes :P
 	{
-		
-		enfant.Bierwirth[i]=parent1.Bierwirth[i];
-		nbApparitionJobs[enfant.Bierwirth[i]] ++;
+		//cout<< nbApparitionJobs[i] << endl;
+
+		enfant.Bierwirth[i] = parent1.Bierwirth[i];
+		nbApparitionJobs[ parent1.Bierwirth[i] ] ++;
 		
 	}
-	int indice = probleme.nb_machine+1;
-	for (int i = probleme.nb_machine + 1; i <= probleme.nb_machine * 2; i++)
+	for (int i = 1; i <= probleme.nb_piece; i++)
 	{
-		if ((nbApparitionJobs[enfant.Bierwirth[i]] < probleme.nb_machine ))
+		cout << nbApparitionJobs[i] << " ";
+	}
+	cout << "fin";
+	cout << endl;
+	
+	int i = ((probleme.nb_machine*probleme.nb_piece) / 3) + 1;
+	bool stop = false;
+	while( i <= ((probleme.nb_machine*probleme.nb_piece) * 2 / 3) && stop)
+	{
+		if ((nbApparitionJobs[parent2.Bierwirth[i]] < probleme.nb_machine )) //bug ici
 		{
 			enfant.Bierwirth[i] = parent2.Bierwirth[i];
-			nbApparitionJobs[enfant.Bierwirth[i]] ++;
-			indice++;
+			nbApparitionJobs[parent2.Bierwirth[i]] ++;
+			i++;
+			
 		}
+		else
+		{
+			stop = true;
+		}
+		
 	}
-	for (int i = indice; i <= probleme.nb_machine * 3; i++)
+	for (int i = 1; i <= probleme.nb_piece; i++)
+	{
+		cout << nbApparitionJobs[i] << " ";
+	}
+
+	cout << "fin";
+	cout << i;
+	for (int j = i; j <= (probleme.nb_machine*probleme.nb_piece) ; j++)
 	{
 		int k = 1;
 		while (nbApparitionJobs[k] == probleme.nb_machine)
 		{
 			k++;
 		}
-		enfant.Bierwirth[i] = k;
+		enfant.Bierwirth[j] = k;
 		nbApparitionJobs[k]++;
 
 	}
+	for (int i = 1; i <= probleme.nb_piece; i++)
+	{
+		cout << nbApparitionJobs[i] << " ";
+	}
+
+	cout << "fin";
+	
 
 	cout << endl << "Vecteur bierwith :" << endl;		// affichage tableau Bierwith
 	for (int k = 1; k <= probleme.nb_machine*probleme.nb_piece; k++) {
@@ -490,6 +524,53 @@ void croisement(t_probleme& probleme, t_solution &parent1, t_solution &parent2, 
 	for (int k = 1; k <= probleme.nb_machine*probleme.nb_piece; k++) {
 		cout << enfant.Bierwirth[k] << " ";
 	}
-	cout << endl;
+	cout << endl; 
 
+}
+
+
+
+void algoGenetique(t_probleme & probleme, t_solution & solution, t_population & generationInitiale, t_population & elite, int nbGeneration, int nbIterRechLocale, int nbIndividuSelection)
+{
+	int k = 1;
+	while( k< nbGeneration)
+	{
+		genererPopulationAlea(generationInitiale, probleme, solution, nbIterRechLocale);
+		selectionBestIndividus(generationInitiale, nbIndividuSelection, elite);
+		t_population nouvelleGenerationParCroissement;
+		t_solution enfant1;
+	
+		for (int i=0; i < elite.nbIndividu; i++)
+		{
+			croisement(probleme, elite.liste[i], elite.liste[i + 1], enfant1);
+			rechercheLocal(probleme, enfant1, nbIterRechLocale);
+			if ((enfant1.makespan > elite.liste[i].makespan) && (enfant1.makespan > elite.liste[i+1].makespan))
+			{
+				t_solution worst = elite.liste[i];
+				if ( worst.makespan > elite.liste[i + 1].makespan )
+				{
+					worst = elite.liste[i + 1];
+					worst = enfant1;							// on remplace le pire parent par le fils
+				}
+							  
+															// croisement reussi
+			}
+			else if ((enfant1.makespan > elite.liste[i].makespan))
+			{
+				elite.liste[i] = enfant1;
+							
+
+			}
+			else if((enfant1.makespan > elite.liste[i+1].makespan) )
+			{
+				elite.liste[i+1] = enfant1;
+							
+			}
+		} 
+
+		k++;
+
+		
+	}
+	
 }
