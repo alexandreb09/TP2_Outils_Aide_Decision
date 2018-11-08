@@ -65,10 +65,10 @@ void afficher_machine_inv(t_probleme probleme);
 void afficher_solution(t_solution solution);
 void afficherIntro();
 
-void testerDouble(t_solution &solution1, t_solution &solution2, bool doublant);
-void genererPopulationAlea(t_population &population, t_probleme &probleme, t_solution &solution, int nb);
+void testerDouble(t_population & population, t_solution & solution1, bool doublant, int h, int k);
+void hashage(t_population & population, t_solution & solution1, int h, int k);
+void genererPopulationAlea(t_population & population, t_probleme & probleme, t_solution & solution, int nb, int k, int h);
 void selectionBestIndividus(t_population &population, int nb, t_population &populationNouvelle);
 void croisement(t_probleme &probleme, t_solution &parent1, t_solution &parent2, t_solution &enfant);
-void algoGenetique(t_probleme & probleme, t_solution & solution, t_population & generationInitiale, t_population & elite, int nbGeneration, int nbIterRechLocale, int nbIndividuSelection);
-#endif // !BIERWITH
+void algoGenetique(t_probleme & probleme, t_solution & solution, t_population & generationInitiale, t_population & elite, int nbGeneration, int nbIterRechLocale, int nbIndividuSelection, int k, int h);
 #endif // !BIERWITH
