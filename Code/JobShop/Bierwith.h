@@ -21,8 +21,9 @@ using namespace std;
 const int nb_max_machines = 20;
 const int nb_max_pieces = 20;
 const int t_max = 16;
+const int max = 10;
 
-typedef struct probleme {
+typedef struct prob {
 	int nb_machine;
     int nb_piece;
 	int mach[nb_max_pieces + 1][nb_max_machines + 1];
@@ -38,7 +39,15 @@ typedef struct solu {
 	int Bierwirth[nb_max_pieces*nb_max_machines + 1];
 	int ES[nb_max_pieces*nb_max_machines + 1];
 	int pere[nb_max_pieces*nb_max_machines + 1];
+	int signature;
 }t_solution;
+
+typedef struct population
+{ 
+	int nbIndividu = max;
+	t_solution liste[max];
+
+}t_population;
 
 void lire_fichier(string nom_fichier, t_probleme & probleme);
 
@@ -56,4 +65,10 @@ void afficher_machine_inv(t_probleme probleme);
 void afficher_solution(t_solution solution);
 void afficherIntro();
 
+void testerDouble(t_population & population, t_solution & solution1, bool doublant, int h, int k);
+void hashage(t_population & population, t_solution & solution1, int h, int k);
+void genererPopulationAlea(t_population & population, t_probleme & probleme, t_solution & solution, int nb, int k, int h);
+void selectionBestIndividus(t_population &population, int nb, t_population &populationNouvelle);
+void croisement(t_probleme &probleme, t_solution &parent1, t_solution &parent2, t_solution &enfant);
+void algoGenetique(t_probleme & probleme, t_solution & solution, t_population & generationInitiale, t_population & elite, int nbGeneration, int nbIterRechLocale, int nbIndividuSelection, int k, int h);
 #endif // !BIERWITH
