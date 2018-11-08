@@ -9,7 +9,7 @@ int main(int, char **) {
 	// srand(123456897);
 	int n_ite = 100;
 	t_probleme probleme;
-	lire_fichier("..//Sources//ft06.txt", probleme);
+	lire_fichier("..//Sources//la01.txt", probleme);
 	afficher(probleme);
 
 	t_solution sol;

@@ -32,12 +32,12 @@ void lire_fichier(string nom_fichier, t_probleme & probleme){
 void generer_vect_alea(t_probleme & probleme, t_solution & solution) {
 	const int nb_elem_V = probleme.nb_machine*probleme.nb_piece;  // 9;
 	const int nb_max_num_V = probleme.nb_machine; // 3;
-	int max = nb_max_num_V, i;
+	int max = probleme.nb_piece,i;
 	int tab1_pt[t_max + 1];
 	int tab2_pt[t_max + 1];
 	
-	for (int i = 1; i <= probleme.nb_machine; i++) {		// Initialisation tableau tab1 et tab2
-		tab1_pt[i] = probleme.nb_piece;
+	for (int i = 1; i <= probleme.nb_piece; i++) {		// Initialisation tableau tab1 et tab2
+		tab1_pt[i] = probleme.nb_machine;
 		tab2_pt[i] = i;
 	}
 
@@ -52,13 +52,13 @@ void generer_vect_alea(t_probleme & probleme, t_solution & solution) {
 		}
 	}
 
-	/*
+	
 	cout << endl << "Vecteur bierwith :" << endl;		// affichage tableau Bierwith
 	for (int k = 1; k <= nb_elem_V; k++) {
 		cout << solution.Bierwirth[k] << " ";
 	}
 	cout << endl;
-	*/
+	
 }
 
 
@@ -130,7 +130,7 @@ void inverser_duree(t_probleme & probleme){
 
 void inverser_machine(t_probleme & probleme) {
 	int machine;
-	for (int ligne = 1; ligne <= probleme.nb_machine; ligne++) {
+	for (int ligne = 1; ligne <= probleme.nb_piece; ligne++) {
 		for (int colonne = 1; colonne <= probleme.nb_machine; colonne++) {
 			probleme.mach_inv[ligne][probleme.mach[ligne][colonne]] =  colonne;
 		}
@@ -233,6 +233,7 @@ void rechercheLocal(t_probleme & probleme, t_solution & solution, int nbIteratio
 
 
 	while (j != 0 && compteurIteration < nbIteration_max){
+		compteurIteration++;
 		/*
 		cout << "Operation numero :" << i<< endl;
 		cout << "Le pere de i est " << solution.pere[i] << endl;
@@ -368,5 +369,4 @@ void rechercheLocal(t_probleme & probleme, t_solution & solution, int nbIteratio
 		cout << "valeur de j est : " << j << endl;
 		*/
 	}
-	compteurIteration++;
 }
