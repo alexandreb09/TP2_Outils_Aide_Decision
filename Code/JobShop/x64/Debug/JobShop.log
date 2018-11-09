@@ -1,4 +1,7 @@
 ﻿  Bierwith.cpp
-d:\1.cours\isima\zz2\outils_aide_décision\tp2\code\jobshop\bierwith.cpp(136): warning C4101: 'machine' : variable locale non référencée
-d:\1.cours\isima\zz2\outils_aide_décision\tp2\code\jobshop\bierwith.cpp(362): warning C4101: 'h' : variable locale non référencée
-  JobShop.vcxproj -> D:\1.Cours\ISIMA\ZZ2\Outils_Aide_Décision\TP2\Code\x64\Debug\JobShop.exe
+c:\users\alexa\desktop\tp2_outils_aide_decision-ea1e5735399abea640b6bdf5a469b6b8150908a6\code\jobshop\bierwith.cpp(136): warning C4101: 'machine' : variable locale non référencée
+c:\users\alexa\desktop\tp2_outils_aide_decision-ea1e5735399abea640b6bdf5a469b6b8150908a6\code\jobshop\bierwith.cpp(362): warning C4101: 'h' : variable locale non référencée
+  main.cpp
+  Génération de code en cours...
+  LINK : C:\Users\alexa\Desktop\TP2_Outils_Aide_Decision-ea1e5735399abea640b6bdf5a469b6b8150908a6\Code\x64\Debug\JobShop.exe introuvable ou non généré par la dernière édition de liens incrémentielle ; édition de liens complète en cours
+  JobShop.vcxproj -> C:\Users\alexa\Desktop\TP2_Outils_Aide_Decision-ea1e5735399abea640b6bdf5a469b6b8150908a6\Code\x64\Debug\JobShop.exe
