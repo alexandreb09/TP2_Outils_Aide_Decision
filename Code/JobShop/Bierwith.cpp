@@ -2,6 +2,9 @@
 
 using namespace std;
 
+int signature[K] = { 0 };
+
+
 void lire_fichier(string nom_fichier, t_probleme & probleme){
 	ifstream mon_fichier(nom_fichier);
 	
@@ -52,12 +55,13 @@ void generer_vect_alea(t_probleme & probleme, t_solution & solution) {
 		}
 	}
 
-	
+	/*
 	cout << endl << "Vecteur bierwith :" << endl;		// affichage tableau Bierwith
 	for (int k = 1; k <= nb_elem_V; k++) {
 		cout << solution.Bierwirth[k] << " ";
 	}
 	cout << endl;
+	*/
 	
 }
 
@@ -150,7 +154,7 @@ void Ajout_PereInit_Makespen(t_solution &solution, t_probleme &probleme) {
 
 
 /*============================================*/
-/*				AFFICHER					  */
+/*				AFFICHAGE					  */
 /*============================================*/
 
 void afficher(t_probleme probleme) {
@@ -201,7 +205,7 @@ void afficher_solution(t_solution solution) {
 	cout << "0" << endl;
 }
 
-void afficherIntro() {
+void afficher_intro() {
 	cout << "   _______  _______  _______        _______  _    _  _______  _______ " << endl <<
 		"  |__   __||   _   ||   _   |      |   ____|| |  | ||   _   ||   _   |" << endl <<
 		"     | |   |  | |  ||  |_|  |      |  |___ || |  | ||  | |  ||  |_|  |" << endl <<
@@ -210,30 +214,28 @@ void afficherIntro() {
 		" |_____|   |_______||_______|      |_______||_|  |_||_______||__|     " << endl;
 }
 
-void rechercheLocal(t_probleme & probleme, t_solution & solution, int nbIteration_max){
+void rechercheLocal(t_probleme & probleme, t_solution & solution){
 	evaluer(probleme, solution);
-	cout << "Makespan avant optimisation :" << solution.makespan << endl;
 
-	int i = solution.pere[solution.longueur+1];
-	int j = solution.pere[i];
-	int compteurIteration = 1;
-	int Pi, Pj;										//position dans vecteur de bierwith
-
-	t_solution solution2 = solution;
-
-	int comp1 = 0;
-	int comp2 = 0;
+	int i = solution.pere[solution.longueur+1];		// Indice noeud côté fin arc disjonctif
+	int j = solution.pere[i];						// Indice noeud côté debut arc disjonctif
+	int compteurIteration = 1;						// Nb intéreation recherche lcoale
+	int Pi, Pj;										// Position dans vecteur de bierwith
+	int comp1 = 0, comp2 = 0;
 	int k = 1;
 	int l = 1;
+
+	t_solution solution2 = solution;				// Nouvelle solution
+
+
 
 	std::vector<int> APP;
 	APP.push_back(-1);
 	for (int i = 0; i < solution.longueur ; i++) {
 		APP.push_back((int) i/probleme.nb_machine+1);
 	}
-
-
-	while (j != 0 && compteurIteration < nbIteration_max){
+	
+	while (j != 0 && compteurIteration < nb_max_iteration_RL){
 		compteurIteration++;
 		/*
 		cout << "Operation numero :" << i<< endl;
@@ -241,36 +243,6 @@ void rechercheLocal(t_probleme & probleme, t_solution & solution, int nbIteratio
 		*/
 
 		if (APP[i] != APP[j] ){
-			/*
-			int job1;
-			int ordreOp1 = i % probleme.nb_machine + 1;
-			int job2;
-			int ordreOp2 = i % probleme.nb_machine + 1;
-
-			
-			if (i <= probleme.nb_machine){
-				job1 = 1;
-				ordreOp1 = i;
-			}
-			else if ((i % probleme.nb_machine != 0)){
-				job1 = (i / probleme.nb_machine ) + 1;
-				ordreOp1 = i % probleme.nb_machine;
-			}
-			else {
-				job1 = (i / probleme.nb_machine);
-			}
-			if (j <= probleme.nb_machine){
-				job2 = 1;
-				ordreOp2 = j;
-			}
-			else if ((j % probleme.nb_machine != 0)){
-				job2 = (j / probleme.nb_machine) + 1;
-				ordreOp2 = j % probleme.nb_machine ;
-			}
-			else {
-				job2= (j / probleme.nb_machine);
-			}
-			*/
 			int job_i = (i-1) / probleme.nb_machine + 1;
 			int ordre_Op_i = i - (job_i-1) * probleme.nb_machine;
 
@@ -306,7 +278,6 @@ void rechercheLocal(t_probleme & probleme, t_solution & solution, int nbIteratio
 				l++;
 			}
 			/*
-			cout << "test" << endl;
 			cout << "Indice1 est : "<<Pi << endl;
 			cout << "Indice2 est : "<<Pj << endl;
 			cout << "test" << endl<<endl;
@@ -334,20 +305,16 @@ void rechercheLocal(t_probleme & probleme, t_solution & solution, int nbIteratio
 				cout << solution2.Bierwirth[t] << " ";
 			}
 			cout << endl;
-			
-			cout <<"evaluer2"<< endl;
 			*/
 			evaluer(probleme, solution2);
 			/*
 			for (int t = 1; t <= probleme.nb_machine * probleme.nb_piece; t++) {
 				cout << solution2.Bierwirth[t] << " ";
 			}
-			
-			cout << endl;
-			
-			cout << "Nouveau Makespan est : " << solution2.makespan << endl;
-			cout << endl;
+						
+			cout << endl << "Nouveau Makespan est : " << solution2.makespan << endl << endl;
 			*/
+
 			if (solution2.makespan < solution.makespan)	{
 				solution = solution2;
 				solution.pere[solution.longueur + 1];
@@ -372,204 +339,148 @@ void rechercheLocal(t_probleme & probleme, t_solution & solution, int nbIteratio
 	}
 }
 
-void hashage(t_population & population, t_solution & solution1, int h, int k)
-{
-	
-	for (int i = 1; i <= solution1.longueur; i++)
-	{
-		h += (solution1.ES[i]^2)%k;                   
-	}
 
-}
-void testerDouble(t_population & population, t_solution & solution1, bool doublant, int h, int k)
-{
-	hashage(population, solution1, h, k);
-	if (population.signature[h] == 1)
-	{
-		doublant = true;
+
+int hashage(t_population & population, t_solution & solution){
+	int h = 0;
+	for (int i = 1; i <= solution.longueur; i++){
+		h += (solution.ES[i]^2) %K;                   
 	}
-	else
-	{
+	return h;
+}
+
+void testerDouble(t_population & population, t_solution & solution, bool doublant){
+	int h = hashage(population, solution);
+	doublant = true;
+	if (0 == signature[h])	{
 		doublant = false;
-		population.signature[h] = 1;
+		signature[h] = 1;
 	}
-
 }
 
-void genererPopulationAlea(t_population & population, t_probleme & probleme, t_solution & solution, int nb, int k, int h )
-{
-	int i = 0;
-	while (i < population.nbIndividu)
-	{
-		t_solution nouvelleSolution;
+void genererPopulationAlea(t_population & population, t_probleme & probleme){
+	int i = 0, h;
+	t_solution solution;
+	while (i < population.nbIndividu){
 		generer_vect_alea(probleme, solution);
-		//evaluer(probleme, solution);
-		rechercheLocal(probleme, solution, nb);
-		nouvelleSolution = solution;
+		rechercheLocal(probleme, solution);
+		
 		bool doublant = false;
-		hashage(population, nouvelleSolution , h, k);
-		testerDouble(population,nouvelleSolution, doublant, h,k);
+		testerDouble(population,solution, doublant);
 
-		
-		if (doublant == false)
-		{
-			population.liste[i] = nouvelleSolution;
-		
-			if (i != 0 && population.liste[i].makespan < population.liste[i - 1].makespan)
-			{
-				t_solution tmp = population.liste[i - 1];
-				population.liste[i - 1] = population.liste[i];
-				population.liste[i] = tmp;
-
-			}
+		if (false == doublant){
+			population.liste.push_back(solution);
 			i++;
-			cout << "Best makespan de la " << i  << "eme solution est " << nouvelleSolution.makespan << endl;
-
-			cout << endl;
 		}
-		
-
-
-		
-		
 	}
-	for (int k = 0; k < population.nbIndividu; k++)
-	{
+
+	std::sort(population.liste.begin(), population.liste.end(), sortByID);
+
+	/*
+	for (int k = 0; k < population.nbIndividu; k++){
 		cout << (population.liste[k]).makespan << "  " ;
 	}
+	*/
 }
 
 
 
-void selectionBestIndividus(t_population &population, int nb, t_population& populationNouvelle)
-{
-	for (int i = 0; i < nb; i++)
-	{
-		populationNouvelle.liste[i] = population.liste[i];
+void selection_population_elite(t_population &population, t_population& elite){
+	elite.nbIndividu = taille_pop_elite;
+	for (int i = 1; i < taille_pop_elite; i++){
+		elite.liste[i] = population.liste[i];	
 	}
-
 }
 
-void croisement(t_probleme& probleme, t_solution &parent1, t_solution &parent2, t_solution& enfant)
-{
-	int c = probleme.nb_machine * probleme.nb_piece;
-	int alea = ( rand() % c ) + 1;
-	cout << endl << "Vecteur bierwith :" << endl;		// affichage tableau Bierwith
-	for (int k = 1; k <= probleme.nb_machine*probleme.nb_piece; k++) {
+void croisement(t_probleme& probleme, t_solution &parent1, t_solution &parent2, t_solution& enfant){
+	int taille = probleme.nb_machine * probleme.nb_piece;
+	int alea = ( rand() % taille ) + 1;
+	/*
+	cout << endl << "alea : " << alea << endl << "Vecteur bierwith :" << endl << "parent1 : ";		// affichage tableau Bierwith
+	for (int k = 1; k <= taille; k++) {
 		cout << parent1.Bierwirth[k] << " ";
 	}
-	
+	cout << endl << "parent2 : ";
+	for (int k = 1; k <= taille; k++) {
+		cout << parent2.Bierwirth[k] << " ";
+	}
 	cout << endl;
+	*/
 	int nbApparitionJobs[nb_max_pieces] = {0};
-	for (int i = 1; i <= alea; i++) 
-	{
+	for (int i = 1; i <= alea; i++){
 		enfant.Bierwirth[i] = parent1.Bierwirth[i];
 		nbApparitionJobs[ parent1.Bierwirth[i] ] ++;
-		
 	}
-	for (int i = 1; i <= probleme.nb_piece; i++)
-	{
-		cout << nbApparitionJobs[i] << " ";
-	}
-	cout << "fin";
-	cout << endl;
+
 	
-	int i = alea + 1;
-	int j = 1;           // var de parcours du 2eme parent
-	while( i <= (probleme.nb_machine*probleme.nb_piece) )
-	{
-		if ((nbApparitionJobs[parent2.Bierwirth[j]] < probleme.nb_machine )) 
-		{
-			enfant.Bierwirth[i] = parent2.Bierwirth[j];
-			nbApparitionJobs[parent2.Bierwirth[j]] ++;
-			i++;
-			j++;
-			
+	alea++;								// Variable parcours parent 2
+	int nb_elem_fils = alea;			// var de parcours fils
+	while( alea <= taille){
+		if (nbApparitionJobs[parent2.Bierwirth[nb_elem_fils]] < probleme.nb_machine ) {
+			enfant.Bierwirth[alea] = parent2.Bierwirth[nb_elem_fils];
+			nbApparitionJobs[parent2.Bierwirth[nb_elem_fils]] ++;
+			alea++;		
 		}
-		else
-		{
-			j++;
-		}
-		
-	}
-	for (int i = 1; i <= probleme.nb_piece; i++)
-	{
-		cout << nbApparitionJobs[i] << " ";
+		nb_elem_fils = nb_elem_fils % taille + 1;
 	}
 
-	cout << "fin";
-	
-	/*for (int i = 1; i <= probleme.nb_piece; i++)
-	{
-		cout << nbApparitionJobs[i] << " ";
-	}
-
-	cout << "fin";
-	
-
-	cout << endl << "Vecteur bierwith :" << endl;		// affichage tableau Bierwith
-	for (int k = 1; k <= probleme.nb_machine*probleme.nb_piece; k++) {
-		cout << parent1.Bierwirth[k] << " ";
-	}
+	/*
 	cout << endl;
-
-	cout << endl << "Vecteur bierwith :" << endl;		// affichage tableau Bierwith
-	for (int k = 1; k <= probleme.nb_machine*probleme.nb_piece; k++) {
-		cout << parent2.Bierwirth[k] << " " ;
-	}
-	cout << endl;
-
-	cout << endl << "Vecteur bierwith :" << endl;		// affichage tableau Bierwith
-	for (int k = 1; k <= probleme.nb_machine*probleme.nb_piece; k++) {
+	for (int k = 1; k <= taille; k++) {
 		cout << enfant.Bierwirth[k] << " ";
 	}
-	cout << endl; */
-
+	cout << endl;
+	*/
 }
 
 
 
-void algoGenetique(t_probleme & probleme, t_solution & solution, t_population & generationInitiale, t_population & elite, int nbGeneration, int nbIterRechLocale, int nbIndividuSelection, int k, int h)
-{
-	
-	while( k< nbGeneration)
-	{
-		genererPopulationAlea(generationInitiale, probleme, solution, nbIterRechLocale, k, h);
-		selectionBestIndividus(generationInitiale, nbIndividuSelection, elite);
-		t_population nouvelleGenerationParCroissement;
-		t_solution enfant1;
-	
-		for (int i=0; i < elite.nbIndividu; i++)
-		{
-			croisement(probleme, elite.liste[i], elite.liste[i + 1], enfant1);
-			rechercheLocal(probleme, enfant1, nbIterRechLocale);
-			if ((enfant1.makespan > elite.liste[i].makespan) && (enfant1.makespan > elite.liste[i+1].makespan))
-			{
-				t_solution worst = elite.liste[i];
-				if ( worst.makespan > elite.liste[i + 1].makespan )
-				{
-					worst = elite.liste[i + 1];
-					worst = enfant1;							// on remplace le pire parent par le fils
-				}
-							  
-															// croisement reussi
-			}
-			else if ((enfant1.makespan > elite.liste[i].makespan))
-			{
-				elite.liste[i] = enfant1;
-							
+void algoGenetique(t_probleme & probleme, t_population & population, t_population & elite){
+	int k = 0, best_makespan = infini, compt = 0;
+	int num_pere_elite;
+	t_solution pere_mauvais, enfant, pere_bon;
 
-			}
-			else if((enfant1.makespan > elite.liste[i+1].makespan) )
-			{
-				elite.liste[i+1] = enfant1;
-							
+	for (int i = 1; i <= taille_pop_elite; i++) {
+		elite.liste.push_back(pere_mauvais);
+	}
+
+	genererPopulationAlea(population, probleme);
+
+	while( k < nb_max_generation){
+		selection_population_elite(population, elite);
+	
+		for (int i=taille_pop_elite; i < nb_max_population; i++){
+			num_pere_elite = rand() % (taille_pop_elite-2) + 2;											// On exclut la meilleure solution
+
+			pere_bon = elite.liste[num_pere_elite];
+			croisement(probleme, pere_bon, population.liste[i], enfant);
+			rechercheLocal(probleme, enfant);
+
+			if (enfant.makespan <= population.liste[i].makespan) {
+				population.liste[i] = enfant;
 			}
 		} 
 
-		k++;
+		if (best_makespan > elite.liste[1].makespan) {
+			best_makespan = elite.liste[1].makespan;
+			compt = 0;
+		}
+		else compt++;
 
-		
+		if (compt > nb_gene_avant_extermination) {
+			tuer_population_faible(probleme,population);
+		}
+		cout << "Makespan generation " << k << " : " << population.liste[1].makespan << " " << endl;
+		k++;
 	}
-	
 }
+
+
+void tuer_population_faible(t_probleme &probleme, t_population & population) {
+	for (int i = taille_pop_elite; i < nb_max_population; i++) {
+		generer_vect_alea(probleme, population.liste[i]);
+		rechercheLocal(probleme, population.liste[i]);
+	}
+}
+
+bool sortByID(t_solution &lhs, t_solution &rhs) { return lhs.makespan < rhs.makespan; }

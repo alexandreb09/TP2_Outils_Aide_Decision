@@ -2,54 +2,49 @@
 
 
 
-int main(int, char **) {	 
 
-	afficherIntro();
+int main(int, char **){
 
 	// srand(123456897);
-	int n_ite = 60;
+
 	t_probleme probleme;
+	t_population population;
+	t_population elite;
+
+	afficher_intro();
 
 	lire_fichier("..//Sources//la01.txt", probleme);
-
-
-	t_population population;
-	lire_fichier("..//Sources//ft06.txt", probleme);
 	afficher(probleme);
 
-	t_solution sol;
-	generer_vect_alea(probleme, sol);
+
+	// generer_vect_alea(probleme, sol1);
+	// generer_vect_alea(probleme, sol2);
+
+	// croisement(probleme, sol1, sol2, enfant);
 
 	inverser_duree(probleme);
 	// afficher_Pinv(probleme);
 	inverser_machine(probleme);
 	// afficher_machine_inv(probleme);
+	
+	// evaluer(probleme, sol);
 
-	/* 
-	// Exemple cours 3 x 3
-	sol.Bierwirth[1] = 1;
-	sol.Bierwirth[2] = 2;
-	sol.Bierwirth[3] = 2;
-	sol.Bierwirth[4] = 3;
-	sol.Bierwirth[5] = 3;
-	sol.Bierwirth[6] = 1;
-	sol.Bierwirth[7] = 2;
-	sol.Bierwirth[8] = 1;
-	sol.Bierwirth[9] = 3;
-	*/
+	// genererPopulationAlea(population, probleme);
 
-	//evaluer(probleme, sol);
+	// rechercheLocal(probleme, sol, n_ite);
 
-	//rechercheLocal(probleme, sol, n_ite);
-	t_population elite;
+	// genererPopulationAlea(population,  probleme,  sol, 0);
 
-	genererPopulationAlea( population,  probleme,  sol, n_ite, 0 , 9999);
-	t_solution enfant;
-	//cout << population.liste[1].Bierwirth[3];;
-	croisement(probleme, population.liste[1], population.liste[2], enfant);
-	//algoGenetique( probleme,  sol, population,  elite, 30, n_ite, population.nbIndividu - 2);
-	string stop;
+	// cout << population.liste[1].Bierwirth[3];;
+	// croisement(probleme, population.liste[1], population.liste[2], enfant);
+	// algoGenetique( probleme,  sol, population,  elite, 30, n_ite, population.nbIndividu - 2);
+
 	//cout << endl << endl << endl << "Apres " << n_ite << " iterations, on trouve un makespan : " << sol.makespan << endl << "Appuyer pour sortir (^_-)";
+	algoGenetique(probleme, population, elite);
+	
+	cout << "makespan : " << elite.liste[1].makespan << endl;
+
+	string stop;
 	cin >> stop;
 
 	return 0;
