@@ -25,6 +25,9 @@ void lire_fichier(string nom_fichier, t_probleme & probleme){
 				probleme.duree[i][j] = valeur2;
 			}
 		}
+		inverser_duree(probleme);
+		inverser_machine(probleme);
+		initT(probleme);
 	}
 	else {
 		cout << "Lecture echouee !" << endl;
@@ -33,8 +36,8 @@ void lire_fichier(string nom_fichier, t_probleme & probleme){
 
 
 void generer_vect_alea(t_probleme & probleme, t_solution & solution) {
-	const int nb_elem_V = probleme.nb_machine*probleme.nb_piece;  // 9;
-	const int nb_max_num_V = probleme.nb_machine; // 3;
+	const int nb_elem_V = probleme.nb_machine*probleme.nb_piece;
+	const int nb_max_num_V = probleme.nb_machine;
 	int max = probleme.nb_piece,i;
 	int tab1_pt[t_max + 1];
 	int tab2_pt[t_max + 1];
@@ -44,7 +47,7 @@ void generer_vect_alea(t_probleme & probleme, t_solution & solution) {
 		tab2_pt[i] = i;
 	}
 
-	for (int j = 1; j <= nb_elem_V; j++) {			// Remplissage vecteur Bierwith
+	for (int j = 1; j <= nb_elem_V; j++) {				// Remplissage vecteur Bierwith
 		i = rand() % (max) + 1;
 		tab1_pt[i] --;
 		solution.Bierwirth[j] = tab2_pt[i];
@@ -62,7 +65,6 @@ void generer_vect_alea(t_probleme & probleme, t_solution & solution) {
 	}
 	cout << endl;
 	*/
-	
 }
 
 
@@ -84,14 +86,6 @@ void evaluer(t_probleme & probleme, t_solution & solution) {
 		solution.pere[i] = 0;
 	}
 
-	int cpt = 1;
-	for (int i = 1; i <= probleme.nb_piece; i++) {
-		for (int k = 1; k <= probleme.nb_machine; k++) {
-			probleme.T[i][k] = cpt;
-			cpt++;
-		}
-	}
-		
 	/*		RESOLUTION		*/	
 	for (int i = 1; i <= probleme.nb_machine*probleme.nb_piece; i++) {
 		int k = solution.Bierwirth[i];
@@ -118,7 +112,7 @@ void evaluer(t_probleme & probleme, t_solution & solution) {
 		}
 		m[mach] = k;
 	}
-	Ajout_PereInit_Makespen(solution, probleme);
+	ajout_pere_init_makespen(solution, probleme);
 	// afficher_solution(solution);
 }
 
@@ -133,7 +127,6 @@ void inverser_duree(t_probleme & probleme){
 }
 
 void inverser_machine(t_probleme & probleme) {
-	int machine;
 	for (int ligne = 1; ligne <= probleme.nb_piece; ligne++) {
 		for (int colonne = 1; colonne <= probleme.nb_machine; colonne++) {
 			probleme.mach_inv[ligne][probleme.mach[ligne][colonne]] =  colonne;
@@ -141,7 +134,17 @@ void inverser_machine(t_probleme & probleme) {
 	}
 }
 
-void Ajout_PereInit_Makespen(t_solution &solution, t_probleme &probleme) {
+void initT(t_probleme &probleme) {
+	int cpt = 1;
+	for (int i = 1; i <= probleme.nb_piece; i++) {
+		for (int k = 1; k <= probleme.nb_machine; k++) {
+			probleme.T[i][k] = cpt;
+			cpt++;
+		}
+	}
+}
+
+void ajout_pere_init_makespen(t_solution &solution, t_probleme &probleme) {
 	int num_mach = probleme.nb_machine;
 	for (int num_piece = 1; num_piece <= probleme.nb_piece; num_piece++) {
 		if (solution.makespan < solution.ES[probleme.T[num_piece][num_mach]] + probleme.duree[num_piece][num_mach]) {
@@ -152,67 +155,6 @@ void Ajout_PereInit_Makespen(t_solution &solution, t_probleme &probleme) {
 }
 
 
-
-/*============================================*/
-/*				AFFICHAGE					  */
-/*============================================*/
-
-void afficher(t_probleme probleme) {
-	cout << endl << "Probleme : " << endl << "Nb pieces : " << probleme.nb_piece << endl << "Nb machines : " << probleme.nb_machine << endl;
-	for (int i = 1; i <= probleme.nb_piece; i++) {
-		for (int j = 1; j <= probleme.nb_machine; j++) {
-			cout << probleme.mach[i][j] << " " << probleme.duree[i][j] << " ";
-		}
-		cout << endl;
-	}
-}
-
-void afficher_Pinv(t_probleme probleme) {
-	cout << endl << "P inv : " << endl;
-	for (int ligne = 1; ligne <= probleme.nb_machine; ligne++) {
-		for (int colonne = 1; colonne <= probleme.nb_machine; colonne++) {
-			cout << probleme.duree_inv[ligne][colonne] << " ";
-		}
-		cout << endl;
-	}
-}
-
-void afficher_machine_inv(t_probleme probleme) {
-	cout << endl << "M inv : " << endl;
-	for (int ligne = 1; ligne <= probleme.nb_machine; ligne++) {
-		for (int colonne = 1; colonne <= probleme.nb_machine; colonne++) {
-			cout << probleme.mach_inv[ligne][colonne] << " ";
-		}
-		cout << endl;
-	}
-}
-
-void afficher_solution(t_solution solution) {
-	cout << endl << "Vecteur ES : " << endl;
-	for (int i = 1; i <= solution.longueur; i++) {
-		cout << solution.ES[i] << " ";
-	}
-	cout << endl << "Vecteur Pere : " << endl;
-	for (int i = 1; i <= solution.longueur +1; i++) {
-		cout << solution.pere[i] << " ";
-	}
-	cout << endl << "makespan : " << solution.makespan << endl << "Chemin critique : ";
-	int ind = solution.pere[solution.longueur+1];
-	while (ind != 0) {
-		cout << ind << " ";
-		ind = solution.pere[ind];
-	}
-	cout << "0" << endl;
-}
-
-void afficher_intro() {
-	cout << "   _______  _______  _______        _______  _    _  _______  _______ " << endl <<
-		"  |__   __||   _   ||   _   |      |   ____|| |  | ||   _   ||   _   |" << endl <<
-		"     | |   |  | |  ||  |_|  |      |  |___ || |  | ||  | |  ||  |_|  |" << endl <<
-		"  _  | |   |  | |  ||   _   |      |____   || |__| ||  | |  ||   ____|" << endl <<
-		" | |_| |   |  |_|  ||  |_|  |       ____|  ||  __  ||  |_|  ||  |     " << endl <<
-		" |_____|   |_______||_______|      |_______||_|  |_||_______||__|     " << endl;
-}
 
 void rechercheLocal(t_probleme & probleme, t_solution & solution){
 	evaluer(probleme, solution);
@@ -349,32 +291,34 @@ int hashage(t_population & population, t_solution & solution){
 	return h;
 }
 
-void testerDouble(t_population & population, t_solution & solution, bool doublant){
+bool testerDouble(t_population & population, t_solution & solution){
 	int h = hashage(population, solution);
-	doublant = true;
+	bool identique = true;
 	if (0 == signature[h])	{
-		doublant = false;
+		identique = false;
 		signature[h] = 1;
 	}
+	return identique;
 }
 
-void genererPopulationAlea(t_population & population, t_probleme & probleme){
-	int i = 0, h;
+void genererPopulationAlea(t_population & population, t_probleme & probleme, t_population & elite){
 	t_solution solution;
+	for (int i = 1; i <= taille_pop_elite; i++) {
+		elite.liste.push_back(solution);
+	}
+
+	int i = 0;
 	while (i < population.nbIndividu){
 		generer_vect_alea(probleme, solution);
 		rechercheLocal(probleme, solution);
 		
-		bool doublant = false;
-		testerDouble(population,solution, doublant);
-
-		if (false == doublant){
+		if (false == testerDouble(population, solution)){
 			population.liste.push_back(solution);
 			i++;
 		}
 	}
 
-	std::sort(population.liste.begin(), population.liste.end(), sortByID);
+	std::sort(population.liste.begin(), population.liste.end(), sortByMakeSpan);
 
 	/*
 	for (int k = 0; k < population.nbIndividu; k++){
@@ -386,8 +330,9 @@ void genererPopulationAlea(t_population & population, t_probleme & probleme){
 
 
 void selection_population_elite(t_population &population, t_population& elite){
+	std::sort(population.liste.begin(), population.liste.end(), sortByMakeSpan);
 	elite.nbIndividu = taille_pop_elite;
-	for (int i = 1; i < taille_pop_elite; i++){
+	for (int i = 0; i < taille_pop_elite; i++){
 		elite.liste[i] = population.liste[i];	
 	}
 }
@@ -436,42 +381,39 @@ void croisement(t_probleme& probleme, t_solution &parent1, t_solution &parent2, 
 
 
 void algoGenetique(t_probleme & probleme, t_population & population, t_population & elite){
-	int k = 0, best_makespan = infini, compt = 0;
+	int nombre_generation = 0, best_makespan = infini, compt = 0;
+	int nombre_extermination = 0;
 	int num_pere_elite;
-	t_solution pere_mauvais, enfant, pere_bon;
+	t_solution enfant, pere_bon;
 
-	for (int i = 1; i <= taille_pop_elite; i++) {
-		elite.liste.push_back(pere_mauvais);
-	}
+	genererPopulationAlea(population, probleme, elite);										// Génération population aléatoire
 
-	genererPopulationAlea(population, probleme);
-
-	while( k < nb_max_generation){
-		selection_population_elite(population, elite);
+	while(nombre_generation < nb_max_generation){ // & nombre_extermination < nb_max_extermination){											// Pour chaque génération
+		selection_population_elite(population, elite);										// Définition population élite
 	
-		for (int i=taille_pop_elite; i < nb_max_population; i++){
-			num_pere_elite = rand() % (taille_pop_elite-2) + 2;											// On exclut la meilleure solution
-
+		for (int i=taille_pop_elite; i < nb_max_population; i++){							// Pour chaque individu "mauvais"
+			num_pere_elite = rand() % (taille_pop_elite-2) + 2;								// On tire aléatoirement un père bon
 			pere_bon = elite.liste[num_pere_elite];
-			croisement(probleme, pere_bon, population.liste[i], enfant);
-			rechercheLocal(probleme, enfant);
 
-			if (enfant.makespan <= population.liste[i].makespan) {
-				population.liste[i] = enfant;
+			croisement(probleme, pere_bon, population.liste[i], enfant);					// On fait le croisement avec le pere mauvais
+			rechercheLocal(probleme, enfant);												// On regarde le makespan de l'enfant créé
+						
+			if (enfant.makespan <= population.liste[i].makespan) {							// Si le makespan est meilleur que celui du père mauvais
+				population.liste[i] = enfant;												// Le pere mauvais est remplacé par le fils
 			}
 		} 
 
-		if (best_makespan > elite.liste[1].makespan) {
-			best_makespan = elite.liste[1].makespan;
-			compt = 0;
+		if (best_makespan > elite.liste[1].makespan) {										// Si le best makespan de la pop s'est amélioré
+			best_makespan = elite.liste[1].makespan;										// MAJ best makespan
+			compt = 0;																		// Réinitialise le compteur
 		}
-		else compt++;
+		else compt++;																		// Sinon incrémentation compteur
 
-		if (compt > nb_gene_avant_extermination) {
-			tuer_population_faible(probleme,population);
+		if (compt > nb_gene_avant_extermination) {											// Si makespan constant sur x générations
+			tuer_population_faible(probleme,population);									// On tue tous les parents mauvais
+			nombre_extermination++;
 		}
-		cout << "Makespan generation " << k << " : " << population.liste[1].makespan << " " << endl;
-		k++;
+		nombre_generation++;																// MAJ nombre génération
 	}
 }
 
@@ -483,4 +425,74 @@ void tuer_population_faible(t_probleme &probleme, t_population & population) {
 	}
 }
 
-bool sortByID(t_solution &lhs, t_solution &rhs) { return lhs.makespan < rhs.makespan; }
+bool sortByMakeSpan(t_solution &lhs, t_solution &rhs) { return lhs.makespan < rhs.makespan; }
+
+
+
+
+
+/*============================================*/
+/*				AFFICHAGE					  */
+/*============================================*/
+
+void afficher_probleme(t_probleme probleme, string nom_fichier) {
+	cout << endl << "Probleme : " << nom_fichier << endl << "Nb pieces : " << probleme.nb_piece << endl << "Nb machines : " << probleme.nb_machine << endl;
+	for (int i = 1; i <= probleme.nb_piece; i++) {
+		for (int j = 1; j <= probleme.nb_machine; j++) {
+			cout << probleme.mach[i][j] << " " << probleme.duree[i][j] << " ";
+		}
+		cout << endl;
+	}
+}
+
+void afficher_Pinv(t_probleme probleme) {
+	cout << endl << "P inv : " << endl;
+	for (int ligne = 1; ligne <= probleme.nb_machine; ligne++) {
+		for (int colonne = 1; colonne <= probleme.nb_machine; colonne++) {
+			cout << probleme.duree_inv[ligne][colonne] << " ";
+		}
+		cout << endl;
+	}
+}
+
+void afficher_machine_inv(t_probleme probleme) {
+	cout << endl << "M inv : " << endl;
+	for (int ligne = 1; ligne <= probleme.nb_machine; ligne++) {
+		for (int colonne = 1; colonne <= probleme.nb_machine; colonne++) {
+			cout << probleme.mach_inv[ligne][colonne] << " ";
+		}
+		cout << endl;
+	}
+}
+
+void afficher_solution(t_solution solution) {
+	cout << endl << "Vecteur ES : " << endl;
+	for (int i = 1; i <= solution.longueur; i++) {
+		cout << solution.ES[i] << " ";
+	}
+	cout << endl << "Vecteur Pere : " << endl;
+	for (int i = 1; i <= solution.longueur + 1; i++) {
+		cout << solution.pere[i] << " ";
+	}
+	cout << endl << "makespan : " << solution.makespan << endl << "Chemin critique : ";
+	int ind = solution.pere[solution.longueur + 1];
+	while (ind != 0) {
+		cout << ind << " ";
+		ind = solution.pere[ind];
+	}
+	cout << "0" << endl;
+}
+
+void afficher_resultat(t_population elite, double tps_ecoule) {
+	cout << endl << "Apres " << nb_max_generation << " generations, makespan : " << elite.liste[0].makespan << endl;
+	cout << "Duree execution : " << tps_ecoule << endl;
+}
+
+void afficher_intro() {
+	cout << "   _______  _______  _______        _______  _    _  _______  _______ " << endl <<
+		"  |__   __||   _   ||   _   |      |   ____|| |  | ||   _   ||   _   |" << endl <<
+		"     | |   |  | |  ||  |_|  |      |  |___ || |  | ||  | |  ||  |_|  |" << endl <<
+		"  _  | |   |  | |  ||   _   |      |____   || |__| ||  | |  ||   ____|" << endl <<
+		" | |_| |   |  |_|  ||  |_|  |       ____|  ||  __  ||  |_|  ||  |     " << endl <<
+		" |_____|   |_______||_______|      |_______||_|  |_||_______||__|     " << endl;
+}

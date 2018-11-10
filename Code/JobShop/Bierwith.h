@@ -10,10 +10,9 @@
 #include <sstream>
 
 #include <cstdlib>
-#include <iostream>
-#include <ctime>
 #include <vector>
 #include <algorithm>
+#include <time.h>
 
 using namespace std;
 
@@ -21,13 +20,14 @@ using namespace std;
 const int nb_max_machines = 20;
 const int nb_max_pieces = 20;
 const int t_max = 16;
-const int nb_max_population = 50;
+const int nb_max_population = 100;
 const int taille_pop_elite = 10;
-const int nb_max_iteration_RL = 1;
-const int nb_max_generation = 1000;			// Nombre max générations dans la population
+const int nb_max_iteration_RL = 50;
+const int nb_max_generation = 2000;			// Nombre max générations dans la population
 const int K = 99999;						// taille table de hashage
 const int infini = 999999;
-const int nb_gene_avant_extermination = 500;
+const int nb_gene_avant_extermination = 100;
+const int nb_max_extermination = 5555;
 
 extern int signature[K];
 
@@ -41,7 +41,7 @@ typedef struct prob {
 	int T[nb_max_pieces+1][nb_max_machines+1];
 }t_probleme;
 
-typedef struct solu {
+typedef struct solu{
 	int longueur;
 	int makespan;
 	int Bierwirth[nb_max_pieces*nb_max_machines + 1];
@@ -59,30 +59,30 @@ typedef struct population{
 /*				PROTOTYPES					  */
 /*============================================*/
 void lire_fichier(string nom_fichier, t_probleme & probleme);
-
-void generer_vect_alea(t_probleme &probleme, t_solution &solution);
 void inverser_duree(t_probleme & probleme);
 void inverser_machine(t_probleme & probleme);
+void initT(t_probleme &probleme);
 
+void generer_vect_alea(t_probleme &probleme, t_solution &solution);
 void evaluer(t_probleme & probleme, t_solution & solution);
-void Ajout_PereInit_Makespen(t_solution &solution, t_probleme &sprobleme);
+void ajout_pere_init_makespen(t_solution &solution, t_probleme &sprobleme);
 void rechercheLocal(t_probleme & probleme, t_solution & solution);
 
-void afficher(t_probleme probleme);
-void afficher_Pinv(t_probleme probleme);
-void afficher_machine_inv(t_probleme probleme);
-void afficher_solution(t_solution solution);
-void afficher_intro();
-
-void testerDouble(t_population & population, t_solution & solution1, bool doublant);
+bool testerDouble(t_population & population, t_solution & solution1);
 int hashage(t_population & population, t_solution & solution);
-void genererPopulationAlea(t_population & population, t_probleme & probleme);
+void genererPopulationAlea(t_population & population, t_probleme & probleme, t_population & elite);
 void selection_population_elite(t_population &population, t_population & elite);
 void croisement(t_probleme &probleme, t_solution &parent1, t_solution &parent2, t_solution &enfant);
 void algoGenetique(t_probleme & probleme, t_population & population, t_population & elite);
 void tuer_population_faible(t_probleme & probleme, t_population & population);
 
+bool sortByMakeSpan(t_solution &lhs, t_solution &rhs);
 
-bool sortByID(t_solution &lhs, t_solution &rhs);
+void afficher_probleme(t_probleme probleme, string nom_fichier);
+void afficher_Pinv(t_probleme probleme);
+void afficher_machine_inv(t_probleme probleme);
+void afficher_solution(t_solution solution);
+void afficher_resultat(t_population pop, double tps_ecoule);
+void afficher_intro();
 
 #endif // !BIERWITH

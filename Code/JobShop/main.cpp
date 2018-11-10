@@ -5,44 +5,25 @@
 
 int main(int, char **){
 
-	// srand(123456897);
+	// srand(123456897);							// Fixer aléatoire
 
 	t_probleme probleme;
 	t_population population;
 	t_population elite;
+	string nom_fichier = "..//Sources//la10.txt";
 
 	afficher_intro();
 
-	lire_fichier("..//Sources//la01.txt", probleme);
-	afficher(probleme);
+	lire_fichier(nom_fichier, probleme);
+	afficher_probleme(probleme, nom_fichier);
 
+	clock_t begin = clock();
 
-	// generer_vect_alea(probleme, sol1);
-	// generer_vect_alea(probleme, sol2);
-
-	// croisement(probleme, sol1, sol2, enfant);
-
-	inverser_duree(probleme);
-	// afficher_Pinv(probleme);
-	inverser_machine(probleme);
-	// afficher_machine_inv(probleme);
-	
-	// evaluer(probleme, sol);
-
-	// genererPopulationAlea(population, probleme);
-
-	// rechercheLocal(probleme, sol, n_ite);
-
-	// genererPopulationAlea(population,  probleme,  sol, 0);
-
-	// cout << population.liste[1].Bierwirth[3];;
-	// croisement(probleme, population.liste[1], population.liste[2], enfant);
-	// algoGenetique( probleme,  sol, population,  elite, 30, n_ite, population.nbIndividu - 2);
-
-	//cout << endl << endl << endl << "Apres " << n_ite << " iterations, on trouve un makespan : " << sol.makespan << endl << "Appuyer pour sortir (^_-)";
 	algoGenetique(probleme, population, elite);
-	
-	cout << "makespan : " << elite.liste[1].makespan << endl;
+
+	double tps_ecoule = double(clock() - begin) / CLOCKS_PER_SEC;
+
+	afficher_resultat(elite, tps_ecoule);
 
 	string stop;
 	cin >> stop;
