@@ -1,6 +1,5 @@
 #pragma once
 
-
 #ifndef BIERWITH
 #define BIERWITH
 
@@ -9,25 +8,23 @@
 #include <fstream>
 #include <sstream>
 
-#include <cstdlib>
+#include <cstdlib>								// Aléatoire
 #include <vector>
-#include <algorithm>
-#include <time.h>
+#include <algorithm>							// Tri
+#include <time.h>								// Mesure tmp
 
 using namespace std;
 
-
-const int nb_max_machines = 20;
-const int nb_max_pieces = 20;
-const int t_max = 16;
-const int nb_max_population = 100;
-const int taille_pop_elite = 10;
-const int nb_max_iteration_RL = 50;
-const int nb_max_generation = 2000;			// Nombre max générations dans la population
-const int K = 99999;						// taille table de hashage
+const int nb_max_machines = 20;					// Surdimensionnement nombre machines
+const int nb_max_pieces = 20;					// Surdimensionnement nombre pieces
+const int t_max = 16;							// Taille max tableau générations Bierwith
+const int nb_max_population = 100;				// Taille population
+const int taille_pop_elite = 10;				// taille population élite
+const int nb_max_iteration_RL = 200;			// Nombre itérations recherche locale
+const int nb_max_generation = 200;				// Nombre max générations dans la population
+const int K = 99999;							// taille table de hashage
+const int nb_gene_avant_extermination = 100;	// Nombre génération constante avec extermination
 const int infini = 999999;
-const int nb_gene_avant_extermination = 100;
-const int nb_max_extermination = 5555;
 
 extern int signature[K];
 
@@ -68,8 +65,8 @@ void evaluer(t_probleme & probleme, t_solution & solution);
 void ajout_pere_init_makespen(t_solution &solution, t_probleme &sprobleme);
 void rechercheLocal(t_probleme & probleme, t_solution & solution);
 
-bool testerDouble(t_population & population, t_solution & solution1);
-int hashage(t_population & population, t_solution & solution);
+bool testerDouble(t_solution & solution1);
+int hashage(t_solution & solution);
 void genererPopulationAlea(t_population & population, t_probleme & probleme, t_population & elite);
 void selection_population_elite(t_population &population, t_population & elite);
 void croisement(t_probleme &probleme, t_solution &parent1, t_solution &parent2, t_solution &enfant);
@@ -86,3 +83,4 @@ void afficher_resultat(t_population pop, double tps_ecoule);
 void afficher_intro();
 
 #endif // !BIERWITH
+

@@ -4,9 +4,6 @@
 
 
 int main(int, char **){
-
-	// srand(123456897);							// Fixer aléatoire
-
 	t_probleme probleme;
 	t_population population;
 	t_population elite;
@@ -17,13 +14,13 @@ int main(int, char **){
 	lire_fichier(nom_fichier, probleme);
 	afficher_probleme(probleme, nom_fichier);
 
-	clock_t begin = clock();
+	clock_t begin = clock();										// Début mesure temps
 
-	algoGenetique(probleme, population, elite);
+	algoGenetique(probleme, population, elite);						// Recherche solution
 
-	double tps_ecoule = double(clock() - begin) / CLOCKS_PER_SEC;
+	double tps_ecoule = double(clock() - begin) / CLOCKS_PER_SEC;	// Temps écoulé
 
-	afficher_resultat(elite, tps_ecoule);
+	afficher_resultat(elite, tps_ecoule);							// Affichage résultats
 
 	string stop;
 	cin >> stop;
