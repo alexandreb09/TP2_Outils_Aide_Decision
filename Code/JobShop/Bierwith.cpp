@@ -274,7 +274,7 @@ bool testerDouble(t_solution & solution){											// Vérifie que la solution n
 	return identique;
 }
 
-void genererPopulationAlea(t_population & population, t_probleme & probleme, t_population & elite){		// Crée une population aléatoirement
+void genererPopulationAlea(t_population & population, t_probleme & probleme){		// Crée une population aléatoirement
 	t_solution solution;
 
 	int i = 0;
@@ -287,12 +287,7 @@ void genererPopulationAlea(t_population & population, t_probleme & probleme, t_p
 			i++;
 		}
 	}
-
-	std::sort(population.liste.begin(), population.liste.end(), sortByMakeSpan);	// Tri de la population par makespan
-
-	for (int i = 1; i <= taille_pop_elite; i++) {									// Initialisation population élite
-		elite.liste.push_back(population.liste[i]);
-	}
+	
 	/*
 	for (int k = 0; k < population.nbIndividu; k++){
 		cout << (population.liste[k]).makespan << "  " ;
@@ -302,12 +297,8 @@ void genererPopulationAlea(t_population & population, t_probleme & probleme, t_p
 
 
 
-void selection_population_elite(t_population &population, t_population& elite){			// Selectionne la population élite
+void tri_population(t_population &population){											// Selectionne la population élite
 	std::sort(population.liste.begin(), population.liste.end(), sortByMakeSpan);		// Tri la population
-	elite.nbIndividu = taille_pop_elite;
-	for (int i = 0; i < taille_pop_elite; i++){											// Selectionne les individus
-		elite.liste[i] = population.liste[i];	
-	}
 }
 
 void croisement(t_probleme& probleme, t_solution &parent1, t_solution &parent2, t_solution& enfant){		// Effectue le croisement entre deux parents
@@ -353,27 +344,28 @@ void croisement(t_probleme& probleme, t_solution &parent1, t_solution &parent2, 
 
 
 
-void algoGenetique(t_probleme & probleme, t_population & population, t_population & elite){
+void algoGenetique(t_probleme & probleme, t_population & population){
 	int nombre_generation = 0, best_makespan = infini, compt = 0;
-	int nombre_extermination = 0;
 	int num_pere_elite;
 	t_solution enfant, pere_bon;
 	t_population new_pop;
 
-	genererPopulationAlea(population, probleme, elite);										// Génération population aléatoire
+	genererPopulationAlea(population, probleme);											// Génération population aléatoire
 	new_pop = population;
 
 	while(nombre_generation < nb_max_generation){											// Pour chaque génération
-		population = new_pop;
-		selection_population_elite(population, elite);										// Définition population élite
+		tri_population(population);															// Définition population élite
+		new_pop = population;
+
+		// cout << population.liste[0].makespan << " : " << nombre_generation << endl;
 
 		for (int i=taille_pop_elite; i < nb_max_population; i++){							// Pour chaque individu "mauvais"
 			num_pere_elite = rand() % (taille_pop_elite-2) + 2;								// On tire aléatoirement un père bon
-			pere_bon = elite.liste[num_pere_elite];
+			pere_bon = population.liste[num_pere_elite];
 
 			croisement(probleme, pere_bon, population.liste[i], enfant);					// On fait le croisement avec le pere mauvais
 			rechercheLocal(probleme, enfant);												// On regarde le makespan de l'enfant créé
-						
+
 			if ((rand() % 2) > 0) {															
 				new_pop.liste[i] = enfant;
 			}
@@ -381,16 +373,17 @@ void algoGenetique(t_probleme & probleme, t_population & population, t_populatio
 				new_pop.liste[num_pere_elite] = enfant;
 			}
 		} 
+		population = new_pop;
 
-		if (best_makespan > elite.liste[1].makespan) {										// Si le best makespan de la pop s'est amélioré
-			best_makespan = elite.liste[1].makespan;										// MAJ best makespan
+		if (best_makespan > population.liste[0].makespan) {									// Si le best makespan de la pop s'est amélioré
+			best_makespan = population.liste[0].makespan;									// MAJ best makespan
 			compt = 0;																		// Réinitialise le compteur
 		}
 		else compt++;																		// Sinon incrémentation compteur
 
 		if (compt > nb_gene_avant_extermination) {											// Si makespan constant sur x générations
 			tuer_population_faible(probleme,population);									// On tue tous les parents mauvais
-			nombre_extermination++;
+			compt = 0;
 		}
 		nombre_generation++;																// MAJ nombre génération
 	}
@@ -462,8 +455,8 @@ void afficher_solution(t_solution solution) {
 	cout << "0" << endl;
 }
 
-void afficher_resultat(t_population elite, double tps_ecoule) {
-	cout << endl << "Apres " << nb_max_generation << " generations, makespan : " << elite.liste[0].makespan << endl;
+void afficher_resultat(t_population & population, double tps_ecoule) {
+	cout << endl << "Apres " << nb_max_generation << " generations, makespan : " << population.liste[0].makespan << endl;
 	cout << "Duree execution : " << tps_ecoule << endl;
 }
 
